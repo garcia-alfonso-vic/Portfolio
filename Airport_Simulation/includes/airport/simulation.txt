@@ -1,0 +1,187 @@
+#ifndef SIMULATION_H
+#define SIMULATION_H
+#include <cassert>
+#include <cstdlib>
+#include <iomanip>
+#include <string>
+#include "../queue/MyQueue.h"
+#include "../node/node.h"
+#include <iostream>
+ 
+using namespace std;
+const unsigned int TIME_TO_TAKE_OFF = 15;
+const unsigned int TIME_TO_LAND = 5;
+const double LANDING_PROBABILITY = 0.1;
+const double TAKEOFF_PROBABILITY = 0.08;
+const unsigned int FUEL_LIMIT = 20;
+const unsigned int TOTAL_TIME = 1440;
+ 
+void simulate_airport(bool debug = false);
+class averager
+{
+   public:
+       averager() : count(0), sum(0){}
+       void next_plane(double value)
+       {
+           ++count;
+           sum += value;
+       }
+       unsigned int how_many_planes() const
+       {
+           return count;
+       }
+       double average() const
+       {
+           std::setprecision(2);
+           assert(count > 0);
+           return (sum / count);
+       }
+   private:
+       unsigned int count;
+       double sum;
+};
+ 
+class runway
+{
+   public:
+       runway(unsigned int sec = 0)
+       {
+           intial_seconds = sec;
+           seconds_left = 0;
+       }
+       void one_second()
+       {
+           if (is_runway_occupied())
+               --seconds_left;
+       }
+       bool is_runway_occupied() const
+       {
+           return (seconds_left > 0);
+       }
+       unsigned int return_seconds_left() const
+       {
+           return seconds_left;
+       }
+       void start()
+       {
+           assert(!is_runway_occupied());
+           seconds_left = intial_seconds;
+       }
+       bool completed_operation()
+       {
+            return (seconds_left - 1 == 0 );
+       }
+       // unsigned int total_planes() const  { return _avg.how_many_planes(); }
+       // double average() const
+       // {
+       //     return _avg.average();
+       // }
+       // void add_next(double x)
+       // {
+       //     _avg.next_plane(x);
+       // }
+   private:
+       // averager _avg;   
+       unsigned int intial_seconds;
+       unsigned int seconds_left;
+  
+};
+ 
+class bool_source
+{
+   public:
+       bool_source(double p = 0.5)
+       {
+           assert(p >= 0 && "OOPS : propabiltiy is under 0 ");
+           assert(p <= 1 && "OOPS : propabiltiy is over 1");
+          
+           _probability = p;
+       }
+       // If popability allows, airplane is landing
+       bool query() const
+       {
+           return (rand() < _probability * RAND_MAX);
+       }
+   private:
+           double _probability;
+};
+ 
+void simulate_airport(bool debug)
+{
+   Queue<unsigned int> inbound_planes;
+   Queue<unsigned int> outbound_planes;
+ 
+   runway landing(TIME_TO_LAND);
+   runway taking_off(TIME_TO_TAKE_OFF);
+ 
+   bool_source inbound_source(LANDING_PROBABILITY);
+   bool_source outbound_source(TAKEOFF_PROBABILITY);
+ 
+   unsigned int crashed = 0, runway_timer = 0;
+   unsigned int current_second, next_plane_landing = 0, next_plane_takeoff = 0;
+   averager inbound_average, outbound_average;
+   bool plane_landing_complete = false;
+  
+   std::cout << std::setprecision(2);
+   cout << right << "time to take off" << "\t" << ": " << TIME_TO_TAKE_OFF << endl;
+   cout << right << "time to land" << "\t\t" << ": "<< left << TIME_TO_LAND << endl;
+   cout << right << "probabilty of landing" << "\t" << ": "<< left << LANDING_PROBABILITY << endl;
+   cout << right << "probability of takeoff" << "\t" << ": "<< left << TAKEOFF_PROBABILITY << endl;
+   cout << right << "fuel: time to crash" << "\t" << ": "<< left << FUEL_LIMIT << endl;
+   cout << right << "total simulation time" << "\t" << ": "<< left << TOTAL_TIME << endl;
+   cout << endl << endl << endl;
+   cout << ". . . . . . . . . . . . . . . . . . . . . . " << endl;
+  
+   for (current_second = 1; current_second <= TOTAL_TIME; ++current_second)
+   {
+        if (inbound_source.query())
+           inbound_planes.push(current_second);
+
+        //If landing was completed....
+        if (landing.completed_operation())
+        {
+            // Push time it landed to Takeoff Queue
+            outbound_planes.push(current_second);
+        }
+
+       // if Runway is free and there are planes in Queue waiting to takeoff...
+       if ((!taking_off.is_runway_occupied()) && (!outbound_planes.empty()) && (!landing.is_runway_occupied()))
+       {
+            // If Probability allows..
+            if (outbound_source.query())
+            {
+                next_plane_takeoff = outbound_planes.front();
+                outbound_planes.pop();
+                outbound_average.next_plane(current_second - next_plane_takeoff);
+                taking_off.start();
+            }
+        //    cout << "Plane entered Takeout Queue: " << next_plane_landing;
+       }
+       // If runway not occupied and Queue of Landing planes is not empty...
+       if ((!landing.is_runway_occupied()) && (!inbound_planes.empty()))
+       {
+            // Assign the first on the Queue to variable
+            next_plane_landing = inbound_planes.front();
+            // Remove plane from Queue
+            inbound_planes.pop();
+            // Add this plane's time spent since added to Queue to averager
+            inbound_average.next_plane(current_second - next_plane_landing);
+            // Tnitiate landing
+            landing.start();
+       }
+       // If time in the air is greater than 20, and Runway is occupied...the plane has crashed
+       if ((current_second - next_plane_landing > FUEL_LIMIT) && landing.is_runway_occupied())
+               ++crashed;
+       landing.one_second();
+       taking_off.one_second();
+   }
+  
+   cout << inbound_average.how_many_planes() << " landed" << endl;
+   cout << outbound_average.how_many_planes() << " took off\n";
+   cout << crashed << " planes crashed." << endl;
+   cout << "Aveage waiting time to land: " << inbound_average.average() << endl;
+   cout << std::setprecision(5) << "Aveage waiting time to takeoff: " << outbound_average.average() << endl;
+   cout << "Planes in landing_queue: " << inbound_planes.size() << endl;
+   cout << "Planes in takeoff queue: " << outbound_planes.size() << endl;
+}
+#endif //SIMULATION_H

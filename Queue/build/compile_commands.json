@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -o CMakeFiles/main.dir/main.cpp.o -c /Users/victorgarcia/Github/Data-Structures/Queue-Class/main.cpp",
+  "file": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/main.cpp"
+},
+{
+  "directory": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -o CMakeFiles/main.dir/includes/stub/stub.cpp.o -c /Users/victorgarcia/Github/Data-Structures/Queue-Class/includes/stub/stub.cpp",
+  "file": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/includes/stub/stub.cpp"
+},
+{
+  "directory": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -o CMakeFiles/basic_test.dir/_tests/basic_test.cpp.o -c /Users/victorgarcia/Github/Data-Structures/Queue-Class/_tests/basic_test.cpp",
+  "file": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/_tests/basic_test.cpp"
+},
+{
+  "directory": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -o CMakeFiles/basic_test.dir/includes/stub/stub.cpp.o -c /Users/victorgarcia/Github/Data-Structures/Queue-Class/includes/stub/stub.cpp",
+  "file": "/Users/victorgarcia/Github/Data-Structures/Queue-Class/includes/stub/stub.cpp"
+}
+]

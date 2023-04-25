@@ -1,0 +1,1 @@
+/usr/bin/clang++ -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/tseting_main.dir/testing_main.cpp.o CMakeFiles/tseting_main.dir/includes/stub/stub.cpp.o -o tseting_main 

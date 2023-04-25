@@ -1,0 +1,4 @@
+/Users/victorgarcia/Github/Data-Structures/Queue-Class/build/CMakeFiles/main.dir
+/Users/victorgarcia/Github/Data-Structures/Queue-Class/build/CMakeFiles/basic_test.dir
+/Users/victorgarcia/Github/Data-Structures/Queue-Class/build/CMakeFiles/edit_cache.dir
+/Users/victorgarcia/Github/Data-Structures/Queue-Class/build/CMakeFiles/rebuild_cache.dir
